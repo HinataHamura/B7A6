@@ -3,6 +3,7 @@ import { authRoutes } from '../module/auth/auth.route.js';
 import { bookingRoutes } from '../module/booking/booking.route.js';
 import { listingRoutes } from '../module/listing/listing.route.js';
 import { paymentRoutes } from '../module/payment/payment.route.js';
+import { roommateRoutes } from '../module/roommate/roommate.route.js';
 
 const router = Router();
 
@@ -22,6 +23,10 @@ const moduleRoutes = [
   {
     path: '/payments',
     route: paymentRoutes,
+  },
+  {
+    path: '/roommates',
+    route: roommateRoutes,
   },
 ];
 
