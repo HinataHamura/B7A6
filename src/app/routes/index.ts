@@ -7,6 +7,7 @@ import { roommateRoutes } from '../module/roommate/roommate.route.js';
 import { reviewRoutes } from '../module/review/review.route.js';
 import { messageRoutes } from '../module/message/message.route.js';
 import { notificationRoutes } from '../module/notification/notification.route.js';
+import { adminRoutes } from '../module/admin/admin.route.js';
 
 const router = Router();
 
@@ -14,6 +15,10 @@ const moduleRoutes = [
   {
     path: '/auth',
     route: authRoutes,
+  },
+  {
+    path: '/admin',
+    route: adminRoutes,
   },
   {
     path: '/listings',
