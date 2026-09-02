@@ -1,0 +1,83 @@
+enum Role {
+  ADMIN
+  LANDLORD
+  TENANT
+}
+
+enum AuthProvider {
+  CREDENTIALS
+  GOOGLE
+}
+
+enum UserStatus {
+  ACTIVE
+  BLOCKED
+  DELETED
+}
+
+enum ListingType {
+  ENTIRE_PLACE
+  PRIVATE_ROOM
+  SHARED_ROOM
+}
+
+enum ListingStatus {
+  DRAFT
+  PUBLISHED
+  UNAVAILABLE
+  ARCHIVED
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  ANY
+}
+
+enum SleepSchedule {
+  EARLY_BIRD
+  NIGHT_OWL
+  FLEXIBLE
+}
+
+enum Cleanliness {
+  VERY_TIDY
+  MODERATE
+  RELAXED
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  REJECTED
+  CANCELLED
+  COMPLETED
+}
+
+enum PaymentPurpose {
+  BOOKING_ADVANCE
+  SECURITY_DEPOSIT
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+}
+
+enum RoommateRequestStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  CANCELLED
+}
+
+enum NotificationType {
+  BOOKING
+  PAYMENT
+  MESSAGE
+  ROOMMATE_REQUEST
+  REVIEW
+  SYSTEM
+}
