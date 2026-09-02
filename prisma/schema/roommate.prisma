@@ -1,0 +1,78 @@
+model RoommateRequest {
+  id         String                @id @default(uuid())
+  senderId   String
+  sender     TenantProfile         @relation("RequestSender", fields: [senderId], references: [id], onDelete: Cascade)
+  receiverId String
+  receiver   TenantProfile         @relation("RequestReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
+  listingId  String?
+  listing    Listing?              @relation(fields: [listingId], references: [id], onDelete: SetNull)
+
+  status     RoommateRequestStatus @default(PENDING)
+  matchScore Int?
+  message    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([senderId, receiverId, listingId])
+  @@index([receiverId])
+  @@index([senderId])
+  @@map("roommate_requests")
+}
+
+model Review {
+  id         String @id @default(uuid())
+  bookingId  String @unique
+  booking    Booking @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  tenantId   String
+  tenant     TenantProfile @relation("TenantReviews", fields: [tenantId], references: [id], onDelete: Cascade)
+  landlordId String
+  landlord   LandlordProfile @relation("LandlordReviews", fields: [landlordId], references: [id], onDelete: Cascade)
+  listingId  String
+  listing    Listing @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  rating  Int
+  comment String?
+  isVerifiedStay Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([listingId])
+  @@index([landlordId])
+  @@map("reviews")
+}
+
+model Message {
+  id         String @id @default(uuid())
+  senderId   String
+  sender     User   @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  receiverId String
+  receiver   User   @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
+
+  content String
+  isRead  Boolean @default(false)
+
+  createdAt DateTime @default(now())
+
+  @@index([senderId, receiverId])
+  @@index([receiverId, isRead])
+  @@map("messages")
+}
+
+model Notification {
+  id     String            @id @default(uuid())
+  userId String
+  user   User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  type    NotificationType
+  title   String
+  message String
+  isRead  Boolean          @default(false)
+  meta    Json?
+
+  createdAt DateTime @default(now())
+
+  @@index([userId, isRead])
+  @@map("notifications")
+}
