@@ -8,6 +8,7 @@ import { reviewRoutes } from '../module/review/review.route.js';
 import { messageRoutes } from '../module/message/message.route.js';
 import { notificationRoutes } from '../module/notification/notification.route.js';
 import { adminRoutes } from '../module/admin/admin.route.js';
+import { uploadRoutes } from '../module/upload/upload.route.js';
 
 const router = Router();
 
@@ -19,6 +20,10 @@ const moduleRoutes = [
   {
     path: '/admin',
     route: adminRoutes,
+  },
+  {
+    path: '/upload',
+    route: uploadRoutes,
   },
   {
     path: '/listings',
