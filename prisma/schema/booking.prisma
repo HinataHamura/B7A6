@@ -1,0 +1,43 @@
+model Booking {
+  id         String        @id @default(uuid())
+  tenantId   String
+  tenant     TenantProfile @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  listingId  String
+  listing    Listing       @relation(fields: [listingId], references: [id], onDelete: Cascade)
+
+  status     BookingStatus @default(PENDING)
+  moveInDate DateTime
+  message    String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  payments Payment[]
+  review   Review?
+
+  @@index([tenantId])
+  @@index([listingId])
+  @@index([status])
+  @@map("bookings")
+}
+
+model Payment {
+  id        String         @id @default(uuid())
+  bookingId String
+  booking   Booking        @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+
+  transactionId String       @unique
+  purpose       PaymentPurpose
+  amount        Decimal      @db.Decimal(10, 2)
+  status        PaymentStatus @default(PENDING)
+
+  gatewayResponse Json?
+  paidAt          DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([bookingId])
+  @@index([status])
+  @@map("payments")
+}
