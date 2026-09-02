@@ -2,6 +2,7 @@ import status from 'http-status';
 import type { BookingStatus } from '../../../generated/prisma/index.js';
 import { prisma } from '../../lib/prisma.js';
 import { AppError } from '../../utils/AppError.js';
+import { NotificationService } from '../notification/notification.service.js';
 import { BOOKING_STATUS_TRANSITIONS, type ICreateBookingPayload } from './booking.interface.js';
 
 const createBooking = async (tenantUserId: string, payload: ICreateBookingPayload) => {
@@ -31,15 +32,25 @@ const createBooking = async (tenantUserId: string, payload: ICreateBookingPayloa
     throw new AppError(status.CONFLICT, 'You already have an active booking for this listing');
   }
 
-  return prisma.booking.create({
+  const booking = await prisma.booking.create({
     data: {
       tenantId: tenantProfile.id,
       listingId: payload.listingId,
       moveInDate: payload.moveInDate,
       message: payload.message,
     },
-    include: { listing: true },
+    include: { listing: { include: { landlord: true } } },
   });
+
+  await NotificationService.createNotification(
+    booking.listing.landlord.userId,
+    'BOOKING',
+    'New booking request',
+    `${tenantProfile.name} requested to book "${booking.listing.title}"`,
+    { bookingId: booking.id },
+  );
+
+  return booking;
 };
 
 const getMyBookingsAsTenant = async (tenantUserId: string) => {
@@ -140,10 +151,20 @@ const updateBookingStatus = async (
     );
   }
 
-  return prisma.booking.update({
+  const updated = await prisma.booking.update({
     where: { id },
     data: { status: nextStatus },
   });
+
+  await NotificationService.createNotification(
+    booking.tenant.userId,
+    'BOOKING',
+    'Booking status updated',
+    `Your booking for "${booking.listing.title}" is now ${nextStatus}`,
+    { bookingId: id },
+  );
+
+  return updated;
 };
 
 export const BookingService = {

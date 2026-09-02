@@ -3,6 +3,7 @@ import status from 'http-status';
 import { initSSLCommerzPayment, validateSSLCommerzPayment } from '../../lib/sslcommerz.js';
 import { prisma } from '../../lib/prisma.js';
 import { AppError } from '../../utils/AppError.js';
+import { NotificationService } from '../notification/notification.service.js';
 import type { IInitiatePaymentPayload } from './payment.interface.js';
 
 const initiatePayment = async (tenantUserId: string, payload: IInitiatePaymentPayload) => {
@@ -75,7 +76,10 @@ const handlePaymentSuccess = async (transactionId: string, valId: string) => {
     throw new AppError(status.BAD_REQUEST, 'Payment validation failed');
   }
 
-  const payment = await prisma.payment.findUnique({ where: { transactionId } });
+  const payment = await prisma.payment.findUnique({
+    where: { transactionId },
+    include: { booking: { include: { tenant: true, listing: true } } },
+  });
   if (!payment) {
     throw new AppError(status.NOT_FOUND, 'Payment record not found');
   }
@@ -90,6 +94,14 @@ const handlePaymentSuccess = async (transactionId: string, valId: string) => {
       },
     });
   });
+
+  await NotificationService.createNotification(
+    payment.booking.tenant.userId,
+    'PAYMENT',
+    'Payment successful',
+    `Your payment for "${payment.booking.listing.title}" was successful`,
+    { paymentId: payment.id },
+  );
 
   return { transactionId, status: 'PAID' };
 };

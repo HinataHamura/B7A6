@@ -1,6 +1,7 @@
 import status from 'http-status';
 import { prisma } from '../../lib/prisma.js';
 import { AppError } from '../../utils/AppError.js';
+import { NotificationService } from '../notification/notification.service.js';
 import { calculateCompatibilityScore } from './roommate.matching.js';
 
 const MIN_MATCH_SCORE = 30;
@@ -71,7 +72,7 @@ const sendRequest = async (
 
   const matchScore = calculateCompatibilityScore(sender, receiver);
 
-  return prisma.roommateRequest.create({
+  const request = await prisma.roommateRequest.create({
     data: {
       senderId: sender.id,
       receiverId: receiver.id,
@@ -80,6 +81,16 @@ const sendRequest = async (
       matchScore,
     },
   });
+
+  await NotificationService.createNotification(
+    receiver.userId,
+    'ROOMMATE_REQUEST',
+    'New roommate request',
+    `${sender.name} sent you a roommate request (${matchScore}% match)`,
+    { requestId: request.id },
+  );
+
+  return request;
 };
 
 const respondToRequest = async (
