@@ -1,0 +1,67 @@
+import status from 'http-status';
+import { config } from '../../config/index.js';
+import { catchAsync } from '../../utils/catchAsync.js';
+import { sendResponse } from '../../utils/sendResponse.js';
+import { PaymentService } from './payment.service.js';
+
+const initiatePayment = catchAsync(async (req, res) => {
+  const result = await PaymentService.initiatePayment(req.user!.id, req.body);
+
+  sendResponse(res, {
+    statusCode: status.OK,
+    message: 'Payment session created successfully',
+    data: result,
+  });
+});
+
+const paymentSuccess = catchAsync(async (req, res) => {
+  const transactionId = req.params.tranId as string;
+  const valId = (req.body?.val_id || req.query?.val_id) as string;
+
+  await PaymentService.handlePaymentSuccess(transactionId, valId);
+
+  res.redirect(`${config.clientUrl}/payment/success?tran_id=${transactionId}`);
+});
+
+const paymentFail = catchAsync(async (req, res) => {
+  const transactionId = req.params.tranId as string;
+  await PaymentService.handlePaymentFailOrCancel(transactionId, 'FAILED');
+
+  res.redirect(`${config.clientUrl}/payment/fail?tran_id=${transactionId}`);
+});
+
+const paymentCancel = catchAsync(async (req, res) => {
+  const transactionId = req.params.tranId as string;
+  await PaymentService.handlePaymentFailOrCancel(transactionId, 'FAILED');
+
+  res.redirect(`${config.clientUrl}/payment/cancel?tran_id=${transactionId}`);
+});
+
+const paymentIPN = catchAsync(async (req, res) => {
+  const { tran_id, val_id } = req.body;
+
+  if (tran_id && val_id) {
+    await PaymentService.handlePaymentSuccess(tran_id, val_id);
+  }
+
+  res.status(200).send('IPN received');
+});
+
+const getPaymentHistory = catchAsync(async (req, res) => {
+  const result = await PaymentService.getPaymentHistory(req.user!.id, req.user!.role);
+
+  sendResponse(res, {
+    statusCode: status.OK,
+    message: 'Payment history retrieved successfully',
+    data: result,
+  });
+});
+
+export const PaymentController = {
+  initiatePayment,
+  paymentSuccess,
+  paymentFail,
+  paymentCancel,
+  paymentIPN,
+  getPaymentHistory,
+};
