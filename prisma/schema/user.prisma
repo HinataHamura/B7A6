@@ -1,0 +1,93 @@
+model User {
+  id           String       @id @default(uuid())
+  email        String       @unique
+  password     String?
+  role         Role         @default(TENANT)
+  provider     AuthProvider @default(CREDENTIALS)
+  googleId     String?      @unique
+  status       UserStatus   @default(ACTIVE)
+  isVerified   Boolean      @default(false)
+  needsPasswordChange Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  landlordProfile LandlordProfile?
+  tenantProfile   TenantProfile?
+  admin           Admin?
+
+  sentMessages     Message[]      @relation("SentMessages")
+  receivedMessages Message[]      @relation("ReceivedMessages")
+  notifications    Notification[]
+
+  @@index([role])
+  @@index([status])
+  @@map("users")
+}
+
+model Admin {
+  id     String @id @default(uuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name  String
+  phone String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("admins")
+}
+
+model LandlordProfile {
+  id     String @id @default(uuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name         String
+  phone        String?
+  profilePhoto String?
+  bio          String?
+  isVerifiedHost Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  listings Listing[]
+  reviewsReceived Review[] @relation("LandlordReviews")
+
+  @@map("landlord_profiles")
+}
+
+model TenantProfile {
+  id     String @id @default(uuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  name         String
+  phone        String?
+  profilePhoto String?
+  bio          String?
+  dateOfBirth  DateTime?
+  occupation   String?
+
+  gender        Gender?
+  smoker        Boolean?
+  hasPets       Boolean?
+  sleepSchedule SleepSchedule?
+  cleanliness   Cleanliness?
+  budgetMin     Decimal?       @db.Decimal(10, 2)
+  budgetMax     Decimal?       @db.Decimal(10, 2)
+  preferredAreas String[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  bookings         Booking[]
+  reviewsGiven      Review[]          @relation("TenantReviews")
+  roommateRequestsSent     RoommateRequest[] @relation("RequestSender")
+  roommateRequestsReceived RoommateRequest[] @relation("RequestReceiver")
+  savedListings    SavedListing[]
+
+  @@map("tenant_profiles")
+}
