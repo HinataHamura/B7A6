@@ -5,6 +5,8 @@ import { listingRoutes } from '../module/listing/listing.route.js';
 import { paymentRoutes } from '../module/payment/payment.route.js';
 import { roommateRoutes } from '../module/roommate/roommate.route.js';
 import { reviewRoutes } from '../module/review/review.route.js';
+import { messageRoutes } from '../module/message/message.route.js';
+import { notificationRoutes } from '../module/notification/notification.route.js';
 
 const router = Router();
 
@@ -32,6 +34,14 @@ const moduleRoutes = [
   {
     path: '/reviews',
     route: reviewRoutes,
+  },
+  {
+    path: '/messages',
+    route: messageRoutes,
+  },
+  {
+    path: '/notifications',
+    route: notificationRoutes,
   },
 ];
 
