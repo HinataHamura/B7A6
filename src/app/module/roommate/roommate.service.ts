@@ -5,6 +5,8 @@ import { NotificationService } from '../notification/notification.service.js';
 import { calculateCompatibilityScore } from './roommate.matching.js';
 
 const MIN_MATCH_SCORE = 30;
+const CANDIDATE_POOL_LIMIT = 500;
+const MAX_MATCHES_RETURNED = 50;
 
 const findMatches = async (tenantUserId: string) => {
   const me = await prisma.tenantProfile.findUnique({ where: { userId: tenantUserId } });
@@ -14,6 +16,8 @@ const findMatches = async (tenantUserId: string) => {
 
   const others = await prisma.tenantProfile.findMany({
     where: { userId: { not: tenantUserId } },
+    take: CANDIDATE_POOL_LIMIT,
+    orderBy: { createdAt: 'desc' },
   });
 
   const scored = others
@@ -34,7 +38,8 @@ const findMatches = async (tenantUserId: string) => {
       matchScore: calculateCompatibilityScore(me, other),
     }))
     .filter((entry) => entry.matchScore >= MIN_MATCH_SCORE)
-    .sort((a, b) => b.matchScore - a.matchScore);
+    .sort((a, b) => b.matchScore - a.matchScore)
+    .slice(0, MAX_MATCHES_RETURNED);
 
   return scored;
 };
