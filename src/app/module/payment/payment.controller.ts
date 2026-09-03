@@ -32,7 +32,7 @@ const paymentFail = catchAsync(async (req, res) => {
 
 const paymentCancel = catchAsync(async (req, res) => {
   const transactionId = req.params.tranId as string;
-  await PaymentService.handlePaymentFailOrCancel(transactionId, 'FAILED');
+  await PaymentService.handlePaymentFailOrCancel(transactionId, 'CANCELLED');
 
   res.redirect(`${config.clientUrl}/payment/cancel?tran_id=${transactionId}`);
 });

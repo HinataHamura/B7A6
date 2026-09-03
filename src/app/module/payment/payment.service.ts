@@ -70,12 +70,6 @@ const initiatePayment = async (tenantUserId: string, payload: IInitiatePaymentPa
 };
 
 const handlePaymentSuccess = async (transactionId: string, valId: string) => {
-  const validation = await validateSSLCommerzPayment(valId);
-
-  if (validation.status !== 'VALID' && validation.status !== 'VALIDATED') {
-    throw new AppError(status.BAD_REQUEST, 'Payment validation failed');
-  }
-
   const payment = await prisma.payment.findUnique({
     where: { transactionId },
     include: { booking: { include: { tenant: true, listing: true } } },
@@ -84,16 +78,39 @@ const handlePaymentSuccess = async (transactionId: string, valId: string) => {
     throw new AppError(status.NOT_FOUND, 'Payment record not found');
   }
 
-  await prisma.$transaction(async (tx) => {
-    await tx.payment.update({
-      where: { id: payment.id },
-      data: {
-        status: 'PAID',
-        paidAt: new Date(),
-        gatewayResponse: validation as unknown as object,
-      },
-    });
+  if (payment.status === 'PAID') {
+    return { transactionId, status: 'PAID' };
+  }
+
+  const validation = await validateSSLCommerzPayment(valId);
+
+  if (validation.status !== 'VALID' && validation.status !== 'VALIDATED') {
+    throw new AppError(status.BAD_REQUEST, 'Payment validation failed');
+  }
+
+  if (validation.tran_id !== transactionId) {
+    throw new AppError(status.BAD_REQUEST, 'Transaction id mismatch');
+  }
+
+  const validatedAmount = Number(validation.amount);
+  const expectedAmount = Number(payment.amount);
+
+  if (Math.abs(validatedAmount - expectedAmount) > 0.01) {
+    throw new AppError(status.BAD_REQUEST, 'Payment amount mismatch');
+  }
+
+  const updated = await prisma.payment.updateMany({
+    where: { id: payment.id, status: { not: 'PAID' } },
+    data: {
+      status: 'PAID',
+      paidAt: new Date(),
+      gatewayResponse: validation as unknown as object,
+    },
   });
+
+  if (updated.count === 0) {
+    return { transactionId, status: 'PAID' };
+  }
 
   await NotificationService.createNotification(
     payment.booking.tenant.userId,
@@ -106,7 +123,10 @@ const handlePaymentSuccess = async (transactionId: string, valId: string) => {
   return { transactionId, status: 'PAID' };
 };
 
-const handlePaymentFailOrCancel = async (transactionId: string, finalStatus: 'FAILED') => {
+const handlePaymentFailOrCancel = async (
+  transactionId: string,
+  finalStatus: 'FAILED' | 'CANCELLED',
+) => {
   const payment = await prisma.payment.findUnique({ where: { transactionId } });
   if (!payment) {
     throw new AppError(status.NOT_FOUND, 'Payment record not found');
