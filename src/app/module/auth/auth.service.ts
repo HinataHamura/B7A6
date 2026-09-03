@@ -142,6 +142,10 @@ const refreshToken = async (token: string) => {
     throw new AppError(status.UNAUTHORIZED, 'User not found');
   }
 
+  if (user.status !== 'ACTIVE') {
+    throw new AppError(status.FORBIDDEN, 'Your account is not active');
+  }
+
   const accessToken = signToken(
     { userId: user.id, email: user.email, role: user.role },
     config.jwt.accessSecret,
