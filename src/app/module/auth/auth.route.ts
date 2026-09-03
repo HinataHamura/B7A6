@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { checkAuth } from '../../middleware/checkAuth.js';
+import { authRateLimiter } from '../../middleware/rateLimiter.js';
 import { validateRequest } from '../../middleware/validateRequest.js';
 import { AuthController } from './auth.controller.js';
 import {
@@ -12,10 +13,16 @@ import {
 
 const router = Router();
 
-router.post('/register', validateRequest(registerValidation), AuthController.register);
-router.post('/login', validateRequest(loginValidation), AuthController.login);
+router.post(
+  '/register',
+  authRateLimiter,
+  validateRequest(registerValidation),
+  AuthController.register,
+);
+router.post('/login', authRateLimiter, validateRequest(loginValidation), AuthController.login);
 router.post(
   '/google',
+  authRateLimiter,
   validateRequest(googleLoginValidation),
   AuthController.googleLogin,
 );
