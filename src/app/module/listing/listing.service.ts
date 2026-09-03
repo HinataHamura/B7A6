@@ -104,7 +104,11 @@ const getAllListings = async (
   return { data, total, page, limit };
 };
 
-const getNearbyListings = async (latitude: number, longitude: number, radiusKm = 5) => {
+const MAX_RADIUS_KM = 50;
+const NEARBY_RESULT_LIMIT = 50;
+
+const getNearbyListings = async (latitude: number, longitude: number, radiusKmInput = 5) => {
+  const radiusKm = Math.min(Math.max(radiusKmInput, 0.1), MAX_RADIUS_KM);
   const cacheKey = `${LISTING_CACHE_PREFIX}nearby:${latitude}:${longitude}:${radiusKm}`;
   const cached = await getCache<unknown[]>(cacheKey);
   if (cached) return cached;
@@ -129,7 +133,8 @@ const getNearbyListings = async (latitude: number, longitude: number, radiusKm =
       distanceKm: haversineDistanceKm(latitude, longitude, listing.latitude, listing.longitude),
     }))
     .filter((listing) => listing.distanceKm <= radiusKm)
-    .sort((a, b) => a.distanceKm - b.distanceKm);
+    .sort((a, b) => a.distanceKm - b.distanceKm)
+    .slice(0, NEARBY_RESULT_LIMIT);
 
   await setCache(cacheKey, withinRadius, 120);
 

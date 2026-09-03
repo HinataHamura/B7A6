@@ -1,5 +1,6 @@
 import status from 'http-status';
 import { catchAsync } from '../../utils/catchAsync.js';
+import { parsePagination } from '../../utils/pagination.js';
 import { pick } from '../../utils/pick.js';
 import { sendResponse } from '../../utils/sendResponse.js';
 import { listingFilterableFields } from './listing.constant.js';
@@ -17,8 +18,7 @@ const createListing = catchAsync(async (req, res) => {
 
 const getAllListings = catchAsync(async (req, res) => {
   const filters = pick(req.query, listingFilterableFields as any);
-  const page = Number(req.query.page) || 1;
-  const limit = Number(req.query.limit) || 10;
+  const { page, limit } = parsePagination(req.query as Record<string, unknown>);
 
   const result = await ListingService.getAllListings(filters as any, { page, limit });
 
