@@ -21,6 +21,19 @@ async function main() {
 
 main();
 
+const shutdown = async (signal: string) => {
+  console.log(`${signal} received, shutting down gracefully...`);
+  await prisma.$disconnect();
+  if (server) {
+    server.close(() => process.exit(0));
+  } else {
+    process.exit(0);
+  }
+};
+
+process.on('SIGTERM', () => void shutdown('SIGTERM'));
+process.on('SIGINT', () => void shutdown('SIGINT'));
+
 process.on('unhandledRejection', (err) => {
   console.error('Unhandled Rejection detected, shutting down...', err);
   if (server) {
@@ -32,5 +45,9 @@ process.on('unhandledRejection', (err) => {
 
 process.on('uncaughtException', (err) => {
   console.error('Uncaught Exception detected, shutting down...', err);
-  process.exit(1);
+  if (server) {
+    server.close(() => process.exit(1));
+  } else {
+    process.exit(1);
+  }
 });
