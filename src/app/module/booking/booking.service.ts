@@ -1,5 +1,7 @@
 import status from 'http-status';
 import type { BookingStatus } from '../../../generated/prisma/index.js';
+import { bookingStatusEmailTemplate } from '../../lib/emailTemplates.js';
+import { sendEmail } from '../../lib/mailer.js';
 import { prisma } from '../../lib/prisma.js';
 import { AppError } from '../../utils/AppError.js';
 import { NotificationService } from '../notification/notification.service.js';
@@ -121,7 +123,10 @@ const updateBookingStatus = async (
 ) => {
   const booking = await prisma.booking.findUnique({
     where: { id },
-    include: { listing: { include: { landlord: true } }, tenant: true },
+    include: {
+      listing: { include: { landlord: true } },
+      tenant: { include: { user: true } },
+    },
   });
 
   if (!booking) {
@@ -163,6 +168,12 @@ const updateBookingStatus = async (
     `Your booking for "${booking.listing.title}" is now ${nextStatus}`,
     { bookingId: id },
   );
+
+  void sendEmail({
+    to: booking.tenant.user.email,
+    subject: `Booking ${nextStatus.toLowerCase()} — ${booking.listing.title}`,
+    html: bookingStatusEmailTemplate(booking.tenant.name, booking.listing.title, nextStatus),
+  });
 
   return updated;
 };

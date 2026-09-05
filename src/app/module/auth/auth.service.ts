@@ -2,6 +2,8 @@ import bcrypt from 'bcryptjs';
 import { OAuth2Client } from 'google-auth-library';
 import status from 'http-status';
 import { config } from '../../config/index.js';
+import { welcomeEmailTemplate } from '../../lib/emailTemplates.js';
+import { sendEmail } from '../../lib/mailer.js';
 import { prisma } from '../../lib/prisma.js';
 import { AppError } from '../../utils/AppError.js';
 import { signToken, verifyToken } from '../../utils/jwt.js';
@@ -65,6 +67,12 @@ const register = async (payload: IRegisterPayload) => {
   });
 
   const tokens = generateTokens({ userId: result.id, email: result.email, role: result.role });
+
+  void sendEmail({
+    to: result.email,
+    subject: 'Welcome to Roomly',
+    html: welcomeEmailTemplate(payload.name, payload.role),
+  });
 
   return { user: { id: result.id, email: result.email, role: result.role }, ...tokens };
 };

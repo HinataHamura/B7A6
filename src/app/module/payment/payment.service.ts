@@ -1,5 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import status from 'http-status';
+import { paymentReceiptEmailTemplate } from '../../lib/emailTemplates.js';
+import { sendEmail } from '../../lib/mailer.js';
 import { initSSLCommerzPayment, validateSSLCommerzPayment } from '../../lib/sslcommerz.js';
 import { prisma } from '../../lib/prisma.js';
 import { AppError } from '../../utils/AppError.js';
@@ -72,7 +74,9 @@ const initiatePayment = async (tenantUserId: string, payload: IInitiatePaymentPa
 const handlePaymentSuccess = async (transactionId: string, valId: string) => {
   const payment = await prisma.payment.findUnique({
     where: { transactionId },
-    include: { booking: { include: { tenant: true, listing: true } } },
+    include: {
+      booking: { include: { tenant: { include: { user: true } }, listing: true } },
+    },
   });
   if (!payment) {
     throw new AppError(status.NOT_FOUND, 'Payment record not found');
@@ -119,6 +123,17 @@ const handlePaymentSuccess = async (transactionId: string, valId: string) => {
     `Your payment for "${payment.booking.listing.title}" was successful`,
     { paymentId: payment.id },
   );
+
+  void sendEmail({
+    to: payment.booking.tenant.user.email,
+    subject: `Payment received — ${payment.booking.listing.title}`,
+    html: paymentReceiptEmailTemplate(
+      payment.booking.tenant.name,
+      payment.booking.listing.title,
+      Number(payment.amount),
+      transactionId,
+    ),
+  });
 
   return { transactionId, status: 'PAID' };
 };
