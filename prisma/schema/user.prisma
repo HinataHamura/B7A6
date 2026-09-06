@@ -80,6 +80,10 @@ model TenantProfile {
   budgetMax     Decimal?       @db.Decimal(10, 2)
   preferredAreas String[]
 
+  isVerifiedTenant       Boolean  @default(false)
+  verificationDocumentUrl String?
+  verificationStatus     VerificationStatus @default(NOT_SUBMITTED)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

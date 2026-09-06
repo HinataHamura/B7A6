@@ -74,6 +74,13 @@ enum RoommateRequestStatus {
   CANCELLED
 }
 
+enum VerificationStatus {
+  NOT_SUBMITTED
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 enum NotificationType {
   BOOKING
   PAYMENT

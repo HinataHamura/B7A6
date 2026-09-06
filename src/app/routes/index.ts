@@ -9,6 +9,7 @@ import { messageRoutes } from '../module/message/message.route.js';
 import { notificationRoutes } from '../module/notification/notification.route.js';
 import { adminRoutes } from '../module/admin/admin.route.js';
 import { uploadRoutes } from '../module/upload/upload.route.js';
+import { userRoutes } from '../module/user/user.route.js';
 
 const router = Router();
 
@@ -16,6 +17,10 @@ const moduleRoutes = [
   {
     path: '/auth',
     route: authRoutes,
+  },
+  {
+    path: '/users',
+    route: userRoutes,
   },
   {
     path: '/admin',
