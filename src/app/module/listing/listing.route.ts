@@ -27,6 +27,12 @@ router.get(
 
 router.get('/my-listings', checkAuth('LANDLORD'), ListingController.getMyListings);
 
+router.get(
+  '/dashboard-stats',
+  checkAuth('LANDLORD'),
+  ListingController.getLandlordDashboardStats,
+);
+
 router.get('/:id', ListingController.getListingById);
 
 router.patch(

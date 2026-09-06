@@ -76,7 +76,7 @@ const updateListing = catchAsync(async (req, res) => {
 });
 
 const deleteListing = catchAsync(async (req, res) => {
-  await ListingService.deleteListing(req.params.id as string, req.user!.id);
+  await ListingService.deleteListing(req.params.id as string, req.user!.id, req.user!.role);
 
   sendResponse(res, {
     statusCode: status.OK,
@@ -105,6 +105,16 @@ const toggleSaveListing = catchAsync(async (req, res) => {
   });
 });
 
+const getLandlordDashboardStats = catchAsync(async (req, res) => {
+  const result = await ListingService.getLandlordDashboardStats(req.user!.id);
+
+  sendResponse(res, {
+    statusCode: status.OK,
+    message: 'Dashboard stats retrieved successfully',
+    data: result,
+  });
+});
+
 export const ListingController = {
   createListing,
   getAllListings,
@@ -114,4 +124,5 @@ export const ListingController = {
   deleteListing,
   getMyListings,
   toggleSaveListing,
+  getLandlordDashboardStats,
 };

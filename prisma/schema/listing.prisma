@@ -25,8 +25,9 @@ model Listing {
 
   genderPreference Gender?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
   bookings        Booking[]
   reviews         Review[]
@@ -37,6 +38,7 @@ model Listing {
   @@index([city, area])
   @@index([landlordId])
   @@index([latitude, longitude])
+  @@index([deletedAt])
   @@map("listings")
 }
 

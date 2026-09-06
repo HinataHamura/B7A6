@@ -1,5 +1,6 @@
 import status from 'http-status';
-import type { Prisma } from '../../../generated/prisma/index.js';
+import type { Prisma, Role } from '../../../generated/prisma/index.js';
+import { AuditService } from '../audit/audit.service.js';
 import { prisma } from '../../lib/prisma.js';
 import { getCache, invalidateCacheByPrefix, setCache } from '../../lib/redis.js';
 import { AppError } from '../../utils/AppError.js';
@@ -55,7 +56,7 @@ const getAllListings = async (
     return { data: cached.data, total: cached.total, page, limit };
   }
 
-  const andConditions: Prisma.ListingWhereInput[] = [{ status: 'PUBLISHED' }];
+  const andConditions: Prisma.ListingWhereInput[] = [{ status: 'PUBLISHED', deletedAt: null }];
 
   if (searchTerm) {
     andConditions.push({
@@ -119,6 +120,7 @@ const getNearbyListings = async (latitude: number, longitude: number, radiusKmIn
   const candidates = await prisma.listing.findMany({
     where: {
       status: 'PUBLISHED',
+      deletedAt: null,
       latitude: { gte: latitude - latDelta, lte: latitude + latDelta },
       longitude: { gte: longitude - lonDelta, lte: longitude + lonDelta },
     },
@@ -142,8 +144,8 @@ const getNearbyListings = async (latitude: number, longitude: number, radiusKmIn
 };
 
 const getListingById = async (id: string) => {
-  const listing = await prisma.listing.findUnique({
-    where: { id },
+  const listing = await prisma.listing.findFirst({
+    where: { id, deletedAt: null },
     include: {
       landlord: {
         select: {
@@ -174,8 +176,8 @@ const updateListing = async (
   landlordUserId: string,
   payload: Record<string, unknown>,
 ) => {
-  const listing = await prisma.listing.findUnique({
-    where: { id },
+  const listing = await prisma.listing.findFirst({
+    where: { id, deletedAt: null },
     include: { landlord: true },
   });
 
@@ -197,9 +199,9 @@ const updateListing = async (
   return updated;
 };
 
-const deleteListing = async (id: string, landlordUserId: string) => {
-  const listing = await prisma.listing.findUnique({
-    where: { id },
+const deleteListing = async (id: string, landlordUserId: string, landlordRole: Role) => {
+  const listing = await prisma.listing.findFirst({
+    where: { id, deletedAt: null },
     include: { landlord: true },
   });
 
@@ -211,7 +213,19 @@ const deleteListing = async (id: string, landlordUserId: string) => {
     throw new AppError(status.FORBIDDEN, 'You can only delete your own listings');
   }
 
-  await prisma.listing.delete({ where: { id } });
+  await prisma.listing.update({
+    where: { id },
+    data: { deletedAt: new Date(), status: 'ARCHIVED' },
+  });
+
+  await AuditService.createAuditLog({
+    actorId: landlordUserId,
+    actorRole: landlordRole,
+    action: 'LISTING_SOFT_DELETED',
+    entityType: 'Listing',
+    entityId: id,
+  });
+
   await invalidateCacheByPrefix(LISTING_CACHE_PREFIX);
 
   return null;
@@ -227,7 +241,7 @@ const getMyListings = async (landlordUserId: string) => {
   }
 
   return prisma.listing.findMany({
-    where: { landlordId: landlordProfile.id },
+    where: { landlordId: landlordProfile.id, deletedAt: null },
     orderBy: { createdAt: 'desc' },
   });
 };
@@ -257,6 +271,56 @@ const toggleSaveListing = async (tenantUserId: string, listingId: string) => {
   return { saved: true };
 };
 
+const getLandlordDashboardStats = async (landlordUserId: string) => {
+  const landlordProfile = await prisma.landlordProfile.findUnique({
+    where: { userId: landlordUserId },
+  });
+
+  if (!landlordProfile) {
+    throw new AppError(status.NOT_FOUND, 'Landlord profile not found');
+  }
+
+  const [
+    totalListings,
+    publishedListings,
+    totalBookings,
+    pendingBookings,
+    activeBookings,
+    totalRevenueAgg,
+    averageRatingAgg,
+  ] = await Promise.all([
+    prisma.listing.count({ where: { landlordId: landlordProfile.id, deletedAt: null } }),
+    prisma.listing.count({
+      where: { landlordId: landlordProfile.id, status: 'PUBLISHED', deletedAt: null },
+    }),
+    prisma.booking.count({ where: { listing: { landlordId: landlordProfile.id } } }),
+    prisma.booking.count({
+      where: { listing: { landlordId: landlordProfile.id }, status: 'PENDING' },
+    }),
+    prisma.booking.count({
+      where: { listing: { landlordId: landlordProfile.id }, status: 'CONFIRMED' },
+    }),
+    prisma.payment.aggregate({
+      where: { status: 'PAID', booking: { listing: { landlordId: landlordProfile.id } } },
+      _sum: { amount: true },
+    }),
+    prisma.review.aggregate({
+      where: { landlordId: landlordProfile.id },
+      _avg: { rating: true },
+    }),
+  ]);
+
+  return {
+    totalListings,
+    publishedListings,
+    totalBookings,
+    pendingBookings,
+    activeBookings,
+    totalRevenue: totalRevenueAgg._sum.amount ?? 0,
+    averageRating: averageRatingAgg._avg.rating ?? 0,
+  };
+};
+
 export const ListingService = {
   createListing,
   getAllListings,
@@ -266,4 +330,5 @@ export const ListingService = {
   deleteListing,
   getMyListings,
   toggleSaveListing,
+  getLandlordDashboardStats,
 };
