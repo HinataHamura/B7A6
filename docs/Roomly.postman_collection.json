@@ -5,12 +5,13 @@
     "description": "REST API collection for the Roomly Housing & Roommate Platform backend."
   },
   "variable": [
-    { "key": "baseUrl", "value": "http://localhost:5000/api/v1" },
+    { "key": "baseUrl", "value": "https://b7a6.onrender.com/api/v1" },
     { "key": "accessToken", "value": "" },
     { "key": "adminAccessToken", "value": "" },
     { "key": "listingId", "value": "" },
     { "key": "bookingId", "value": "" },
-    { "key": "userId", "value": "" }
+    { "key": "userId", "value": "" },
+    { "key": "tenantProfileId", "value": "" }
   ],
   "item": [
     {
@@ -118,6 +119,57 @@
       ]
     },
     {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Update My Profile (Tenant or Landlord)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bio\": \"Updated bio\",\n  \"occupation\": \"Software Engineer\",\n  \"budgetMin\": 8000,\n  \"budgetMax\": 15000,\n  \"preferredAreas\": [\"Dhanmondi\", \"Mohammadpur\"]\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/users/me", "host": ["{{baseUrl}}"], "path": ["users", "me"] }
+          }
+        },
+        {
+          "name": "Submit Tenant Verification",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"documentUrl\": \"https://example.com/id-card.jpg\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/users/me/verification", "host": ["{{baseUrl}}"], "path": ["users", "me", "verification"] }
+          }
+        },
+        {
+          "name": "Review Tenant Verification (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{adminAccessToken}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"approve\": true\n}" },
+            "url": {
+              "raw": "{{baseUrl}}/users/verification/{{tenantProfileId}}/review",
+              "host": ["{{baseUrl}}"],
+              "path": ["users", "verification", "{{tenantProfileId}}", "review"]
+            }
+          }
+        }
+      ]
+    },
+    {
       "name": "Listings",
       "item": [
         {
@@ -175,6 +227,14 @@
             "method": "GET",
             "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
             "url": { "raw": "{{baseUrl}}/listings/my-listings", "host": ["{{baseUrl}}"], "path": ["listings", "my-listings"] }
+          }
+        },
+        {
+          "name": "Get Landlord Dashboard Stats",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "url": { "raw": "{{baseUrl}}/listings/dashboard-stats", "host": ["{{baseUrl}}"], "path": ["listings", "dashboard-stats"] }
           }
         },
         {
@@ -289,11 +349,19 @@
           }
         },
         {
-          "name": "Get Payment History",
+          "name": "Get Payment History (paginated)",
           "request": {
             "method": "GET",
             "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
-            "url": { "raw": "{{baseUrl}}/payments/history", "host": ["{{baseUrl}}"], "path": ["payments", "history"] }
+            "url": {
+              "raw": "{{baseUrl}}/payments/history?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["payments", "history"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" }
+              ]
+            }
           }
         }
       ]
@@ -491,6 +559,22 @@
             "method": "GET",
             "header": [{ "key": "Authorization", "value": "Bearer {{adminAccessToken}}" }],
             "url": { "raw": "{{baseUrl}}/admin/stats", "host": ["{{baseUrl}}"], "path": ["admin", "stats"] }
+          }
+        },
+        {
+          "name": "Get Audit Logs (paginated)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminAccessToken}}" }],
+            "url": {
+              "raw": "{{baseUrl}}/admin/audit-logs?page=1&limit=20",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "audit-logs"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "20" }
+              ]
+            }
           }
         }
       ]
