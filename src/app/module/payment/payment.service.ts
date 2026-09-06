@@ -5,6 +5,7 @@ import { sendEmail } from '../../lib/mailer.js';
 import { initSSLCommerzPayment, validateSSLCommerzPayment } from '../../lib/sslcommerz.js';
 import { prisma } from '../../lib/prisma.js';
 import { AppError } from '../../utils/AppError.js';
+import { AuditService } from '../audit/audit.service.js';
 import { NotificationService } from '../notification/notification.service.js';
 import type { IInitiatePaymentPayload } from './payment.interface.js';
 
@@ -135,6 +136,15 @@ const handlePaymentSuccess = async (transactionId: string, valId: string) => {
     ),
   });
 
+  await AuditService.createAuditLog({
+    actorId: payment.booking.tenant.userId,
+    actorRole: 'TENANT',
+    action: 'PAYMENT_COMPLETED',
+    entityType: 'Payment',
+    entityId: payment.id,
+    metadata: { transactionId, amount: Number(payment.amount) },
+  });
+
   return { transactionId, status: 'PAID' };
 };
 
@@ -155,27 +165,33 @@ const handlePaymentFailOrCancel = async (
   return { transactionId, status: finalStatus };
 };
 
-const getPaymentHistory = async (userId: string, role: string) => {
-  if (role === 'TENANT') {
-    return prisma.payment.findMany({
-      where: { booking: { tenant: { userId } } },
-      include: { booking: { include: { listing: true } } },
-      orderBy: { createdAt: 'desc' },
-    });
-  }
+const getPaymentHistory = async (
+  userId: string,
+  role: 'ADMIN' | 'LANDLORD' | 'TENANT',
+  paginationOptions: { page: number; limit: number },
+) => {
+  const { page, limit } = paginationOptions;
+  const skip = (page - 1) * limit;
 
-  if (role === 'LANDLORD') {
-    return prisma.payment.findMany({
-      where: { booking: { listing: { landlord: { userId } } } },
-      include: { booking: { include: { listing: true, tenant: true } } },
-      orderBy: { createdAt: 'desc' },
-    });
-  }
+  const where =
+    role === 'TENANT'
+      ? { booking: { tenant: { userId } } }
+      : role === 'LANDLORD'
+        ? { booking: { listing: { landlord: { userId } } } }
+        : {};
 
-  return prisma.payment.findMany({
-    include: { booking: { include: { listing: true, tenant: true } } },
-    orderBy: { createdAt: 'desc' },
-  });
+  const [data, total] = await Promise.all([
+    prisma.payment.findMany({
+      where,
+      skip,
+      take: limit,
+      include: { booking: { include: { listing: true, tenant: role !== 'TENANT' } } },
+      orderBy: { createdAt: 'desc' },
+    }),
+    prisma.payment.count({ where }),
+  ]);
+
+  return { data, total, page, limit };
 };
 
 export const PaymentService = {

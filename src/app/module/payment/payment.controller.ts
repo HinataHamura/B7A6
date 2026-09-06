@@ -1,6 +1,7 @@
 import status from 'http-status';
 import { config } from '../../config/index.js';
 import { catchAsync } from '../../utils/catchAsync.js';
+import { parsePagination } from '../../utils/pagination.js';
 import { sendResponse } from '../../utils/sendResponse.js';
 import { PaymentService } from './payment.service.js';
 
@@ -48,12 +49,22 @@ const paymentIPN = catchAsync(async (req, res) => {
 });
 
 const getPaymentHistory = catchAsync(async (req, res) => {
-  const result = await PaymentService.getPaymentHistory(req.user!.id, req.user!.role);
+  const { page, limit } = parsePagination(req.query as Record<string, unknown>);
+  const result = await PaymentService.getPaymentHistory(req.user!.id, req.user!.role, {
+    page,
+    limit,
+  });
 
   sendResponse(res, {
     statusCode: status.OK,
     message: 'Payment history retrieved successfully',
-    data: result,
+    meta: {
+      page,
+      limit,
+      total: result.total,
+      totalPages: Math.ceil(result.total / limit),
+    },
+    data: result.data,
   });
 });
 
