@@ -1,9 +1,11 @@
+import { Prisma } from '../../../generated/prisma/index.js';
 import status from 'http-status';
 import type { BookingStatus } from '../../../generated/prisma/index.js';
 import { bookingStatusEmailTemplate } from '../../lib/emailTemplates.js';
 import { sendEmail } from '../../lib/mailer.js';
 import { prisma } from '../../lib/prisma.js';
 import { AppError } from '../../utils/AppError.js';
+import { AuditService } from '../audit/audit.service.js';
 import { NotificationService } from '../notification/notification.service.js';
 import { BOOKING_STATUS_TRANSITIONS, type ICreateBookingPayload } from './booking.interface.js';
 
@@ -18,31 +20,45 @@ const createBooking = async (tenantUserId: string, payload: ICreateBookingPayloa
 
   const listing = await prisma.listing.findUnique({ where: { id: payload.listingId } });
 
-  if (!listing || listing.status !== 'PUBLISHED') {
+  if (!listing || listing.status !== 'PUBLISHED' || listing.deletedAt) {
     throw new AppError(status.NOT_FOUND, 'Listing not available for booking');
   }
 
-  const existingActiveBooking = await prisma.booking.findFirst({
-    where: {
-      tenantId: tenantProfile.id,
-      listingId: payload.listingId,
-      status: { in: ['PENDING', 'CONFIRMED'] },
-    },
-  });
+  let booking;
+  try {
+    booking = await prisma.$transaction(
+      async (tx) => {
+        const existingActiveBooking = await tx.booking.findFirst({
+          where: {
+            tenantId: tenantProfile.id,
+            listingId: payload.listingId,
+            status: { in: ['PENDING', 'CONFIRMED'] },
+          },
+        });
 
-  if (existingActiveBooking) {
+        if (existingActiveBooking) {
+          throw new AppError(
+            status.CONFLICT,
+            'You already have an active booking for this listing',
+          );
+        }
+
+        return tx.booking.create({
+          data: {
+            tenantId: tenantProfile.id,
+            listingId: payload.listingId,
+            moveInDate: payload.moveInDate,
+            message: payload.message,
+          },
+          include: { listing: { include: { landlord: true } } },
+        });
+      },
+      { isolationLevel: Prisma.TransactionIsolationLevel.Serializable },
+    );
+  } catch (error) {
+    if (error instanceof AppError) throw error;
     throw new AppError(status.CONFLICT, 'You already have an active booking for this listing');
   }
-
-  const booking = await prisma.booking.create({
-    data: {
-      tenantId: tenantProfile.id,
-      listingId: payload.listingId,
-      moveInDate: payload.moveInDate,
-      message: payload.message,
-    },
-    include: { listing: { include: { landlord: true } } },
-  });
 
   await NotificationService.createNotification(
     booking.listing.landlord.userId,
@@ -118,7 +134,7 @@ const getBookingById = async (id: string, userId: string, role: string) => {
 const updateBookingStatus = async (
   id: string,
   userId: string,
-  role: string,
+  role: 'ADMIN' | 'LANDLORD' | 'TENANT',
   nextStatus: BookingStatus,
 ) => {
   const booking = await prisma.booking.findUnique({
@@ -156,10 +172,19 @@ const updateBookingStatus = async (
     );
   }
 
-  const updated = await prisma.booking.update({
-    where: { id },
+  const updateResult = await prisma.booking.updateMany({
+    where: { id, status: booking.status },
     data: { status: nextStatus },
   });
+
+  if (updateResult.count === 0) {
+    throw new AppError(
+      status.CONFLICT,
+      'Booking status was changed by another request, please refresh and try again',
+    );
+  }
+
+  const updated = await prisma.booking.findUniqueOrThrow({ where: { id } });
 
   await NotificationService.createNotification(
     booking.tenant.userId,
@@ -173,6 +198,15 @@ const updateBookingStatus = async (
     to: booking.tenant.user.email,
     subject: `Booking ${nextStatus.toLowerCase()} — ${booking.listing.title}`,
     html: bookingStatusEmailTemplate(booking.tenant.name, booking.listing.title, nextStatus),
+  });
+
+  await AuditService.createAuditLog({
+    actorId: userId,
+    actorRole: role,
+    action: 'BOOKING_STATUS_UPDATED',
+    entityType: 'Booking',
+    entityId: id,
+    metadata: { previousStatus: booking.status, newStatus: nextStatus },
   });
 
   return updated;
