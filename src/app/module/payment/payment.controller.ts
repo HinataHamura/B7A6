@@ -1,8 +1,8 @@
 import status from 'http-status';
-import { config } from '../../config/index.js';
 import { catchAsync } from '../../utils/catchAsync.js';
 import { parsePagination } from '../../utils/pagination.js';
 import { sendResponse } from '../../utils/sendResponse.js';
+import { renderPaymentResultPage } from './payment.page.js';
 import { PaymentService } from './payment.service.js';
 
 const initiatePayment = catchAsync(async (req, res) => {
@@ -21,21 +21,21 @@ const paymentSuccess = catchAsync(async (req, res) => {
 
   await PaymentService.handlePaymentSuccess(transactionId, valId);
 
-  res.redirect(`${config.clientUrl}/payment/success?tran_id=${transactionId}`);
+  res.status(status.OK).send(renderPaymentResultPage('success', transactionId));
 });
 
 const paymentFail = catchAsync(async (req, res) => {
   const transactionId = req.params.tranId as string;
   await PaymentService.handlePaymentFailOrCancel(transactionId, 'FAILED');
 
-  res.redirect(`${config.clientUrl}/payment/fail?tran_id=${transactionId}`);
+  res.status(status.OK).send(renderPaymentResultPage('fail', transactionId));
 });
 
 const paymentCancel = catchAsync(async (req, res) => {
   const transactionId = req.params.tranId as string;
   await PaymentService.handlePaymentFailOrCancel(transactionId, 'CANCELLED');
 
-  res.redirect(`${config.clientUrl}/payment/cancel?tran_id=${transactionId}`);
+  res.status(status.OK).send(renderPaymentResultPage('cancel', transactionId));
 });
 
 const paymentIPN = catchAsync(async (req, res) => {
