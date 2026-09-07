@@ -5,13 +5,50 @@
     "description": "REST API collection for the Roomly Housing & Roommate Platform backend."
   },
   "variable": [
-    { "key": "baseUrl", "value": "https://b7a6.onrender.com/api/v1" },
-    { "key": "accessToken", "value": "" },
-    { "key": "adminAccessToken", "value": "" },
-    { "key": "listingId", "value": "" },
-    { "key": "bookingId", "value": "" },
-    { "key": "userId", "value": "" },
-    { "key": "tenantProfileId", "value": "" }
+    {
+      "key": "accessToken",
+      "value": ""
+    },
+    {
+      "key": "adminAccessToken",
+      "value": ""
+    },
+    {
+      "key": "landlordAccessToken",
+      "value": ""
+    },
+    {
+      "key": "listingId",
+      "value": "4fa3f2a4-2a24-4d37-ac45-588779a1efba"
+    },
+    {
+      "key": "bookingId",
+      "value": "788b4ae0-542c-421a-a9b8-42c40a45f5f9"
+    },
+    {
+      "key": "userId",
+      "value": "db5b6037-3fec-4339-b49a-9623b58f8854"
+    },
+    {
+      "key": "tenantProfileId",
+      "value": "f27b1f1e-d98f-47bd-ab2c-b0b154002598"
+    },
+    {
+      "key": "receiverTenantProfileId",
+      "value": ""
+    },
+    {
+      "key": "landlordProfileId",
+      "value": "9490e166-145f-4a67-9bf1-290a827534bc"
+    },
+    {
+      "key": "notificationId",
+      "value": "1e3cbe76-514e-43d0-b7d2-70c5b3004192"
+    },
+    {
+      "key": "roommateRequestId",
+      "value": ""
+    }
   ],
   "item": [
     {
@@ -21,77 +58,213 @@
           "name": "Register (Tenant)",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name\": \"Nusrat Jahan\",\n  \"email\": \"tenant.demo@roomly.com\",\n  \"password\": \"Tenant123!\",\n  \"role\": \"TENANT\",\n  \"phone\": \"01722222222\"\n}"
             },
-            "url": { "raw": "{{baseUrl}}/auth/register", "host": ["{{baseUrl}}"], "path": ["auth", "register"] }
+            "url": {
+              "raw": "https://b7a6.onrender.com/api/v1/auth/register",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "register"
+              ],
+              "protocol": "https"
+            }
           }
         },
         {
           "name": "Register (Landlord)",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name\": \"Karim Rahman\",\n  \"email\": \"landlord.demo@roomly.com\",\n  \"password\": \"Landlord123!\",\n  \"role\": \"LANDLORD\",\n  \"phone\": \"01711111111\"\n}"
             },
-            "url": { "raw": "{{baseUrl}}/auth/register", "host": ["{{baseUrl}}"], "path": ["auth", "register"] }
+            "url": {
+              "raw": "https://b7a6.onrender.com/api/v1/auth/register",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "register"
+              ],
+              "protocol": "https"
+            }
           }
         },
         {
           "name": "Login",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"tenant.demo@roomly.com\",\n  \"password\": \"Tenant123!\"\n}"
             },
-            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+            "url": {
+              "raw": "https://b7a6.onrender.com/api/v1/auth/login",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ],
+              "protocol": "https"
+            }
           }
         },
         {
           "name": "Login (Admin)",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"email\": \"admin@roomly.com\",\n  \"password\": \"Admin123!\"\n}"
             },
-            "url": { "raw": "{{baseUrl}}/auth/login", "host": ["{{baseUrl}}"], "path": ["auth", "login"] }
+            "url": {
+              "raw": "https://b7a6.onrender.com/api/v1/auth/login",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "login"
+              ],
+              "protocol": "https"
+            }
           }
         },
         {
           "name": "Google Login",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"idToken\": \"<google-id-token>\",\n  \"role\": \"TENANT\"\n}"
             },
-            "url": { "raw": "{{baseUrl}}/auth/google", "host": ["{{baseUrl}}"], "path": ["auth", "google"] }
+            "url": {
+              "raw": "https://b7a6.onrender.com/api/v1/auth/google",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "google"
+              ],
+              "protocol": "https"
+            }
           }
         },
         {
           "name": "Refresh Token",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Content-Type", "value": "application/json" }],
-            "body": { "mode": "raw", "raw": "{\n  \"refreshToken\": \"<refresh-token>\"\n}" },
-            "url": { "raw": "{{baseUrl}}/auth/refresh-token", "host": ["{{baseUrl}}"], "path": ["auth", "refresh-token"] }
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"<refresh-token>\"\n}"
+            },
+            "url": {
+              "raw": "https://b7a6.onrender.com/api/v1/auth/refresh-token",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "refresh-token"
+              ],
+              "protocol": "https"
+            }
           }
         },
         {
           "name": "Get Me",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
-            "url": { "raw": "{{baseUrl}}/auth/me", "host": ["{{baseUrl}}"], "path": ["auth", "me"] }
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "https://b7a6.onrender.com/api/v1/auth/me",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "me"
+              ],
+              "protocol": "https"
+            }
           }
         },
         {
@@ -99,21 +272,55 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
             ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"oldPassword\": \"Tenant123!\",\n  \"newPassword\": \"NewTenant123!\"\n}"
             },
-            "url": { "raw": "{{baseUrl}}/auth/change-password", "host": ["{{baseUrl}}"], "path": ["auth", "change-password"] }
+            "url": {
+              "raw": "https://b7a6.onrender.com/api/v1/auth/change-password",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "change-password"
+              ],
+              "protocol": "https"
+            }
           }
         },
         {
           "name": "Logout",
           "request": {
             "method": "POST",
-            "url": { "raw": "{{baseUrl}}/auth/logout", "host": ["{{baseUrl}}"], "path": ["auth", "logout"] }
+            "url": {
+              "raw": "https://b7a6.onrender.com/api/v1/auth/logout",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "logout"
+              ],
+              "protocol": "https"
+            }
           }
         }
       ]
@@ -126,14 +333,34 @@
           "request": {
             "method": "PATCH",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
             ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"bio\": \"Updated bio\",\n  \"occupation\": \"Software Engineer\",\n  \"budgetMin\": 8000,\n  \"budgetMax\": 15000,\n  \"preferredAreas\": [\"Dhanmondi\", \"Mohammadpur\"]\n}"
             },
-            "url": { "raw": "{{baseUrl}}/users/me", "host": ["{{baseUrl}}"], "path": ["users", "me"] }
+            "url": {
+              "raw": "https://b7a6.onrender.com/api/v1/users/me",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "me"
+              ],
+              "protocol": "https"
+            }
           }
         },
         {
@@ -141,14 +368,35 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
             ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"documentUrl\": \"https://example.com/id-card.jpg\"\n}"
             },
-            "url": { "raw": "{{baseUrl}}/users/me/verification", "host": ["{{baseUrl}}"], "path": ["users", "me", "verification"] }
+            "url": {
+              "raw": "https://b7a6.onrender.com/api/v1/users/me/verification",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "me",
+                "verification"
+              ],
+              "protocol": "https"
+            }
           }
         },
         {
@@ -156,14 +404,35 @@
           "request": {
             "method": "PATCH",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{adminAccessToken}}" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminAccessToken}}"
+              }
             ],
-            "body": { "mode": "raw", "raw": "{\n  \"approve\": true\n}" },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"approve\": true\n}"
+            },
             "url": {
-              "raw": "{{baseUrl}}/users/verification/{{tenantProfileId}}/review",
-              "host": ["{{baseUrl}}"],
-              "path": ["users", "verification", "{{tenantProfileId}}", "review"]
+              "raw": "https://b7a6.onrender.com/api/v1/users/verification/{{tenantProfileId}}/review",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "users",
+                "verification",
+                "{{tenantProfileId}}",
+                "review"
+              ],
+              "protocol": "https"
             }
           }
         }
@@ -177,14 +446,33 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
             ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"title\": \"Cozy Private Room in Dhanmondi\",\n  \"description\": \"A well-lit private room close to Dhanmondi Lake.\",\n  \"type\": \"PRIVATE_ROOM\",\n  \"rentAmount\": 12000,\n  \"securityDeposit\": 12000,\n  \"bedrooms\": 1,\n  \"bathrooms\": 1,\n  \"maxOccupants\": 1,\n  \"addressLine\": \"Road 8, Dhanmondi\",\n  \"city\": \"Dhaka\",\n  \"area\": \"Dhanmondi\",\n  \"latitude\": 23.7461,\n  \"longitude\": 90.3742,\n  \"amenities\": [\"WiFi\", \"AC\"],\n  \"images\": [],\n  \"genderPreference\": \"FEMALE\"\n}"
             },
-            "url": { "raw": "{{baseUrl}}/listings", "host": ["{{baseUrl}}"], "path": ["listings"] }
+            "url": {
+              "raw": "https://b7a6.onrender.com/api/v1/listings",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "listings"
+              ],
+              "protocol": "https"
+            }
           }
         },
         {
@@ -192,16 +480,40 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/listings?city=Dhaka&minRent=5000&maxRent=20000&page=1&limit=10",
-              "host": ["{{baseUrl}}"],
-              "path": ["listings"],
+              "raw": "https://b7a6.onrender.com/api/v1/listings?city=Dhaka&minRent=5000&maxRent=20000&page=1&limit=10",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "listings"
+              ],
               "query": [
-                { "key": "city", "value": "Dhaka" },
-                { "key": "minRent", "value": "5000" },
-                { "key": "maxRent", "value": "20000" },
-                { "key": "page", "value": "1" },
-                { "key": "limit", "value": "10" }
-              ]
+                {
+                  "key": "city",
+                  "value": "Dhaka"
+                },
+                {
+                  "key": "minRent",
+                  "value": "5000"
+                },
+                {
+                  "key": "maxRent",
+                  "value": "20000"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ],
+              "protocol": "https"
             }
           }
         },
@@ -210,14 +522,33 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/listings/nearby?latitude=23.7461&longitude=90.3742&radiusKm=5",
-              "host": ["{{baseUrl}}"],
-              "path": ["listings", "nearby"],
+              "raw": "https://b7a6.onrender.com/api/v1/listings/nearby?latitude=23.7461&longitude=90.3742&radiusKm=5",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "listings",
+                "nearby"
+              ],
               "query": [
-                { "key": "latitude", "value": "23.7461" },
-                { "key": "longitude", "value": "90.3742" },
-                { "key": "radiusKm", "value": "5" }
-              ]
+                {
+                  "key": "latitude",
+                  "value": "23.7461"
+                },
+                {
+                  "key": "longitude",
+                  "value": "90.3742"
+                },
+                {
+                  "key": "radiusKm",
+                  "value": "5"
+                }
+              ],
+              "protocol": "https"
             }
           }
         },
@@ -225,23 +556,75 @@
           "name": "Get My Listings (Landlord)",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
-            "url": { "raw": "{{baseUrl}}/listings/my-listings", "host": ["{{baseUrl}}"], "path": ["listings", "my-listings"] }
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "https://b7a6.onrender.com/api/v1/listings/my-listings",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "listings",
+                "my-listings"
+              ],
+              "protocol": "https"
+            }
           }
         },
         {
           "name": "Get Landlord Dashboard Stats",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
-            "url": { "raw": "{{baseUrl}}/listings/dashboard-stats", "host": ["{{baseUrl}}"], "path": ["listings", "dashboard-stats"] }
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "https://b7a6.onrender.com/api/v1/listings/dashboard-stats",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "listings",
+                "dashboard-stats"
+              ],
+              "protocol": "https"
+            }
           }
         },
         {
           "name": "Get Listing By Id",
           "request": {
             "method": "GET",
-            "url": { "raw": "{{baseUrl}}/listings/{{listingId}}", "host": ["{{baseUrl}}"], "path": ["listings", "{{listingId}}"] }
+            "url": {
+              "raw": "https://b7a6.onrender.com/api/v1/listings/{{listingId}}",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "listings",
+                "{{listingId}}"
+              ],
+              "protocol": "https"
+            }
           }
         },
         {
@@ -249,27 +632,89 @@
           "request": {
             "method": "PATCH",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
             ],
-            "body": { "mode": "raw", "raw": "{\n  \"status\": \"PUBLISHED\",\n  \"rentAmount\": 13000\n}" },
-            "url": { "raw": "{{baseUrl}}/listings/{{listingId}}", "host": ["{{baseUrl}}"], "path": ["listings", "{{listingId}}"] }
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"PUBLISHED\",\n  \"rentAmount\": 13000\n}"
+            },
+            "url": {
+              "raw": "https://b7a6.onrender.com/api/v1/listings/{{listingId}}",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "listings",
+                "{{listingId}}"
+              ],
+              "protocol": "https"
+            }
           }
         },
         {
           "name": "Delete Listing (Landlord)",
           "request": {
             "method": "DELETE",
-            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
-            "url": { "raw": "{{baseUrl}}/listings/{{listingId}}", "host": ["{{baseUrl}}"], "path": ["listings", "{{listingId}}"] }
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "https://b7a6.onrender.com/api/v1/listings/{{listingId}}",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "listings",
+                "{{listingId}}"
+              ],
+              "protocol": "https"
+            }
           }
         },
         {
           "name": "Toggle Save Listing (Tenant)",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
-            "url": { "raw": "{{baseUrl}}/listings/{{listingId}}/save", "host": ["{{baseUrl}}"], "path": ["listings", "{{listingId}}", "save"] }
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "https://b7a6.onrender.com/api/v1/listings/{{listingId}}/save",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "listings",
+                "{{listingId}}",
+                "save"
+              ],
+              "protocol": "https"
+            }
           }
         }
       ]
@@ -282,38 +727,114 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
             ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"listingId\": \"{{listingId}}\",\n  \"moveInDate\": \"2026-10-01\",\n  \"message\": \"Looking forward to moving in!\"\n}"
             },
-            "url": { "raw": "{{baseUrl}}/bookings", "host": ["{{baseUrl}}"], "path": ["bookings"] }
+            "url": {
+              "raw": "https://b7a6.onrender.com/api/v1/bookings",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "bookings"
+              ],
+              "protocol": "https"
+            }
           }
         },
         {
           "name": "Get My Bookings (Tenant)",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
-            "url": { "raw": "{{baseUrl}}/bookings/my-bookings", "host": ["{{baseUrl}}"], "path": ["bookings", "my-bookings"] }
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "https://b7a6.onrender.com/api/v1/bookings/my-bookings",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "bookings",
+                "my-bookings"
+              ],
+              "protocol": "https"
+            }
           }
         },
         {
           "name": "Get Landlord Bookings",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
-            "url": { "raw": "{{baseUrl}}/bookings/landlord-bookings", "host": ["{{baseUrl}}"], "path": ["bookings", "landlord-bookings"] }
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "https://b7a6.onrender.com/api/v1/bookings/landlord-bookings",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "bookings",
+                "landlord-bookings"
+              ],
+              "protocol": "https"
+            }
           }
         },
         {
           "name": "Get Booking By Id",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
-            "url": { "raw": "{{baseUrl}}/bookings/{{bookingId}}", "host": ["{{baseUrl}}"], "path": ["bookings", "{{bookingId}}"] }
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "https://b7a6.onrender.com/api/v1/bookings/{{bookingId}}",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "bookings",
+                "{{bookingId}}"
+              ],
+              "protocol": "https"
+            }
           }
         },
         {
@@ -321,11 +842,35 @@
           "request": {
             "method": "PATCH",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
             ],
-            "body": { "mode": "raw", "raw": "{\n  \"status\": \"CONFIRMED\"\n}" },
-            "url": { "raw": "{{baseUrl}}/bookings/{{bookingId}}/status", "host": ["{{baseUrl}}"], "path": ["bookings", "{{bookingId}}", "status"] }
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"CONFIRMED\"\n}"
+            },
+            "url": {
+              "raw": "https://b7a6.onrender.com/api/v1/bookings/{{bookingId}}/status",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "bookings",
+                "{{bookingId}}",
+                "status"
+              ],
+              "protocol": "https"
+            }
           }
         }
       ]
@@ -338,29 +883,70 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
             ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"bookingId\": \"{{bookingId}}\",\n  \"purpose\": \"BOOKING_ADVANCE\"\n}"
             },
-            "url": { "raw": "{{baseUrl}}/payments/initiate", "host": ["{{baseUrl}}"], "path": ["payments", "initiate"] }
+            "url": {
+              "raw": "https://b7a6.onrender.com/api/v1/payments/initiate",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "payments",
+                "initiate"
+              ],
+              "protocol": "https"
+            }
           }
         },
         {
           "name": "Get Payment History (paginated)",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
             "url": {
-              "raw": "{{baseUrl}}/payments/history?page=1&limit=10",
-              "host": ["{{baseUrl}}"],
-              "path": ["payments", "history"],
+              "raw": "https://b7a6.onrender.com/api/v1/payments/history?page=1&limit=10",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "payments",
+                "history"
+              ],
               "query": [
-                { "key": "page", "value": "1" },
-                { "key": "limit", "value": "10" }
-              ]
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ],
+              "protocol": "https"
             }
           }
         }
@@ -373,8 +959,27 @@
           "name": "Find Compatible Matches (Tenant)",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
-            "url": { "raw": "{{baseUrl}}/roommates/matches", "host": ["{{baseUrl}}"], "path": ["roommates", "matches"] }
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "https://b7a6.onrender.com/api/v1/roommates/matches",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "roommates",
+                "matches"
+              ],
+              "protocol": "https"
+            }
           }
         },
         {
@@ -382,30 +987,90 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"receiverId\": \"<tenant-profile-id>\",\n  \"message\": \"Hey, want to room together?\"\n}"
+              "raw": "{\n  \"receiverId\": \"{{receiverTenantProfileId}}\",\n  \"message\": \"Hey, want to room together?\"\n}"
             },
-            "url": { "raw": "{{baseUrl}}/roommates/requests", "host": ["{{baseUrl}}"], "path": ["roommates", "requests"] }
+            "url": {
+              "raw": "https://b7a6.onrender.com/api/v1/roommates/requests",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "roommates",
+                "requests"
+              ],
+              "protocol": "https"
+            }
           }
         },
         {
           "name": "Get Sent Requests",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
-            "url": { "raw": "{{baseUrl}}/roommates/requests/sent", "host": ["{{baseUrl}}"], "path": ["roommates", "requests", "sent"] }
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "https://b7a6.onrender.com/api/v1/roommates/requests/sent",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "roommates",
+                "requests",
+                "sent"
+              ],
+              "protocol": "https"
+            }
           }
         },
         {
           "name": "Get Received Requests",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
-            "url": { "raw": "{{baseUrl}}/roommates/requests/received", "host": ["{{baseUrl}}"], "path": ["roommates", "requests", "received"] }
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "https://b7a6.onrender.com/api/v1/roommates/requests/received",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "roommates",
+                "requests",
+                "received"
+              ],
+              "protocol": "https"
+            }
           }
         },
         {
@@ -413,19 +1078,65 @@
           "request": {
             "method": "PATCH",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
             ],
-            "body": { "mode": "raw", "raw": "{\n  \"status\": \"ACCEPTED\"\n}" },
-            "url": { "raw": "{{baseUrl}}/roommates/requests/<requestId>/respond", "host": ["{{baseUrl}}"], "path": ["roommates", "requests", "<requestId>", "respond"] }
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"ACCEPTED\"\n}"
+            },
+            "url": {
+              "raw": "https://b7a6.onrender.com/api/v1/roommates/requests/{{roommateRequestId}}/respond",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "roommates",
+                "requests",
+                "{{roommateRequestId}}",
+                "respond"
+              ],
+              "protocol": "https"
+            }
           }
         },
         {
           "name": "Cancel Request",
           "request": {
             "method": "PATCH",
-            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
-            "url": { "raw": "{{baseUrl}}/roommates/requests/<requestId>/cancel", "host": ["{{baseUrl}}"], "path": ["roommates", "requests", "<requestId>", "cancel"] }
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "https://b7a6.onrender.com/api/v1/roommates/requests/{{roommateRequestId}}/cancel",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "roommates",
+                "requests",
+                "{{roommateRequestId}}",
+                "cancel"
+              ],
+              "protocol": "https"
+            }
           }
         }
       ]
@@ -438,28 +1149,77 @@
           "request": {
             "method": "POST",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
             ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"bookingId\": \"{{bookingId}}\",\n  \"rating\": 5,\n  \"comment\": \"Great stay, very responsive landlord!\"\n}"
             },
-            "url": { "raw": "{{baseUrl}}/reviews", "host": ["{{baseUrl}}"], "path": ["reviews"] }
+            "url": {
+              "raw": "https://b7a6.onrender.com/api/v1/reviews",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reviews"
+              ],
+              "protocol": "https"
+            }
           }
         },
         {
           "name": "Get Listing Reviews",
           "request": {
             "method": "GET",
-            "url": { "raw": "{{baseUrl}}/reviews/listing/{{listingId}}", "host": ["{{baseUrl}}"], "path": ["reviews", "listing", "{{listingId}}"] }
+            "url": {
+              "raw": "https://b7a6.onrender.com/api/v1/reviews/listing/{{listingId}}",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reviews",
+                "listing",
+                "{{listingId}}"
+              ],
+              "protocol": "https"
+            }
           }
         },
         {
           "name": "Get Landlord Reviews",
           "request": {
             "method": "GET",
-            "url": { "raw": "{{baseUrl}}/reviews/landlord/<landlordProfileId>", "host": ["{{baseUrl}}"], "path": ["reviews", "landlord", "<landlordProfileId>"] }
+            "url": {
+              "raw": "https://b7a6.onrender.com/api/v1/reviews/landlord/{{landlordProfileId}}",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "reviews",
+                "landlord",
+                "{{landlordProfileId}}"
+              ],
+              "protocol": "https"
+            }
           }
         }
       ]
@@ -471,24 +1231,81 @@
           "name": "Get Conversation List",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
-            "url": { "raw": "{{baseUrl}}/messages/conversations", "host": ["{{baseUrl}}"], "path": ["messages", "conversations"] }
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "https://b7a6.onrender.com/api/v1/messages/conversations",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "messages",
+                "conversations"
+              ],
+              "protocol": "https"
+            }
           }
         },
         {
           "name": "Get Unread Count",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
-            "url": { "raw": "{{baseUrl}}/messages/unread-count", "host": ["{{baseUrl}}"], "path": ["messages", "unread-count"] }
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "https://b7a6.onrender.com/api/v1/messages/unread-count",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "messages",
+                "unread-count"
+              ],
+              "protocol": "https"
+            }
           }
         },
         {
           "name": "Get Conversation With User",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
-            "url": { "raw": "{{baseUrl}}/messages/{{userId}}", "host": ["{{baseUrl}}"], "path": ["messages", "{{userId}}"] }
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "https://b7a6.onrender.com/api/v1/messages/{{userId}}",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "messages",
+                "{{userId}}"
+              ],
+              "protocol": "https"
+            }
           }
         }
       ]
@@ -500,24 +1317,81 @@
           "name": "Get My Notifications",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
-            "url": { "raw": "{{baseUrl}}/notifications", "host": ["{{baseUrl}}"], "path": ["notifications"] }
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "https://b7a6.onrender.com/api/v1/notifications",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "notifications"
+              ],
+              "protocol": "https"
+            }
           }
         },
         {
           "name": "Mark One As Read",
           "request": {
             "method": "PATCH",
-            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
-            "url": { "raw": "{{baseUrl}}/notifications/<notificationId>/read", "host": ["{{baseUrl}}"], "path": ["notifications", "<notificationId>", "read"] }
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "https://b7a6.onrender.com/api/v1/notifications/{{notificationId}}/read",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "notifications",
+                "{{notificationId}}",
+                "read"
+              ],
+              "protocol": "https"
+            }
           }
         },
         {
           "name": "Mark All As Read",
           "request": {
             "method": "PATCH",
-            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
-            "url": { "raw": "{{baseUrl}}/notifications/read-all", "host": ["{{baseUrl}}"], "path": ["notifications", "read-all"] }
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "https://b7a6.onrender.com/api/v1/notifications/read-all",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "notifications",
+                "read-all"
+              ],
+              "protocol": "https"
+            }
           }
         }
       ]
@@ -529,8 +1403,27 @@
           "name": "Get All Users",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{adminAccessToken}}" }],
-            "url": { "raw": "{{baseUrl}}/admin/users", "host": ["{{baseUrl}}"], "path": ["admin", "users"] }
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminAccessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "https://b7a6.onrender.com/api/v1/admin/users",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "users"
+              ],
+              "protocol": "https"
+            }
           }
         },
         {
@@ -538,42 +1431,128 @@
           "request": {
             "method": "PATCH",
             "header": [
-              { "key": "Content-Type", "value": "application/json" },
-              { "key": "Authorization", "value": "Bearer {{adminAccessToken}}" }
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminAccessToken}}"
+              }
             ],
-            "body": { "mode": "raw", "raw": "{\n  \"status\": \"BLOCKED\"\n}" },
-            "url": { "raw": "{{baseUrl}}/admin/users/{{userId}}/status", "host": ["{{baseUrl}}"], "path": ["admin", "users", "{{userId}}", "status"] }
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"BLOCKED\"\n}"
+            },
+            "url": {
+              "raw": "https://b7a6.onrender.com/api/v1/admin/users/{{userId}}/status",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "users",
+                "{{userId}}",
+                "status"
+              ],
+              "protocol": "https"
+            }
           }
         },
         {
           "name": "Verify Landlord",
           "request": {
             "method": "PATCH",
-            "header": [{ "key": "Authorization", "value": "Bearer {{adminAccessToken}}" }],
-            "url": { "raw": "{{baseUrl}}/admin/landlords/<landlordProfileId>/verify", "host": ["{{baseUrl}}"], "path": ["admin", "landlords", "<landlordProfileId>", "verify"] }
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminAccessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "https://b7a6.onrender.com/api/v1/admin/landlords/{{landlordProfileId}}/verify",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "landlords",
+                "{{landlordProfileId}}",
+                "verify"
+              ],
+              "protocol": "https"
+            }
           }
         },
         {
           "name": "Get Dashboard Stats",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{adminAccessToken}}" }],
-            "url": { "raw": "{{baseUrl}}/admin/stats", "host": ["{{baseUrl}}"], "path": ["admin", "stats"] }
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminAccessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "https://b7a6.onrender.com/api/v1/admin/stats",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "stats"
+              ],
+              "protocol": "https"
+            }
           }
         },
         {
           "name": "Get Audit Logs (paginated)",
           "request": {
             "method": "GET",
-            "header": [{ "key": "Authorization", "value": "Bearer {{adminAccessToken}}" }],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{adminAccessToken}}"
+              }
+            ],
             "url": {
-              "raw": "{{baseUrl}}/admin/audit-logs?page=1&limit=20",
-              "host": ["{{baseUrl}}"],
-              "path": ["admin", "audit-logs"],
+              "raw": "https://b7a6.onrender.com/api/v1/admin/audit-logs?page=1&limit=20",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "admin",
+                "audit-logs"
+              ],
               "query": [
-                { "key": "page", "value": "1" },
-                { "key": "limit", "value": "20" }
-              ]
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ],
+              "protocol": "https"
             }
           }
         }
@@ -586,16 +1565,42 @@
           "name": "Upload Images",
           "request": {
             "method": "POST",
-            "header": [{ "key": "Authorization", "value": "Bearer {{accessToken}}" }],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
             "body": {
               "mode": "formdata",
-              "formdata": [{ "key": "images", "type": "file", "src": [] }]
+              "formdata": [
+                {
+                  "key": "images",
+                  "type": "file",
+                  "src": []
+                }
+              ]
             },
             "url": {
-              "raw": "{{baseUrl}}/upload/images?folder=listings",
-              "host": ["{{baseUrl}}"],
-              "path": ["upload", "images"],
-              "query": [{ "key": "folder", "value": "listings" }]
+              "raw": "https://b7a6.onrender.com/api/v1/upload/images?folder=listings",
+              "host": [
+                "b7a6",
+                "onrender",
+                "com"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "upload",
+                "images"
+              ],
+              "query": [
+                {
+                  "key": "folder",
+                  "value": "listings"
+                }
+              ],
+              "protocol": "https"
             }
           }
         }
