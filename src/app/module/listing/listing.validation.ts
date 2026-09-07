@@ -22,6 +22,7 @@ export const createListingValidation = z.object({
     amenities: z.array(z.string()).default([]),
     images: z.array(z.string().url()).default([]),
     genderPreference: genderEnum.optional(),
+    status: z.enum(['DRAFT', 'PUBLISHED']).optional(),
   }),
 });
 

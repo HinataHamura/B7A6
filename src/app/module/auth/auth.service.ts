@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import { OAuth2Client } from 'google-auth-library';
+import { OAuth2Client, type TokenPayload } from 'google-auth-library';
 import status from 'http-status';
 import { config } from '../../config/index.js';
 import { welcomeEmailTemplate } from '../../lib/emailTemplates.js';
@@ -99,12 +99,18 @@ const login = async (payload: ILoginPayload) => {
 };
 
 const googleLogin = async (payload: IGoogleLoginPayload) => {
-  const ticket = await googleClient.verifyIdToken({
-    idToken: payload.idToken,
-    audience: config.google.clientId,
-  });
+  let googlePayload: TokenPayload | undefined;
 
-  const googlePayload = ticket.getPayload();
+  try {
+    const ticket = await googleClient.verifyIdToken({
+      idToken: payload.idToken,
+      audience: config.google.clientId,
+    });
+    googlePayload = ticket.getPayload();
+  } catch {
+    throw new AppError(status.UNAUTHORIZED, 'Invalid or expired Google token');
+  }
+
   if (!googlePayload?.email) {
     throw new AppError(status.UNAUTHORIZED, 'Invalid Google token');
   }
