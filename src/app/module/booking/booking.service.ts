@@ -82,7 +82,7 @@ const getMyBookingsAsTenant = async (tenantUserId: string) => {
 
   return prisma.booking.findMany({
     where: { tenantId: tenantProfile.id },
-    include: { listing: true, payments: true },
+    include: { listing: true, payments: true, review: true },
     orderBy: { createdAt: 'desc' },
   });
 };
