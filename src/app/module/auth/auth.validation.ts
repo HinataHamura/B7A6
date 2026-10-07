@@ -37,6 +37,6 @@ export const changePasswordValidation = z.object({
 
 export const refreshTokenValidation = z.object({
   body: z.object({
-    refreshToken: z.string({ required_error: 'Refresh token is required' }),
+    refreshToken: z.string().optional(),
   }),
 });

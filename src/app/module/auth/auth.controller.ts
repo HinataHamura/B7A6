@@ -8,7 +8,7 @@ const setRefreshTokenCookie = (res: import('express').Response, refreshToken: st
   res.cookie('refreshToken', refreshToken, {
     secure: config.env === 'production',
     httpOnly: true,
-    sameSite: 'strict',
+    sameSite: config.env === 'production' ? 'none' : 'lax',
     maxAge: 1000 * 60 * 60 * 24 * 30,
   });
 };
@@ -79,7 +79,11 @@ const getMe = catchAsync(async (req, res) => {
 });
 
 const logout = catchAsync(async (_req, res) => {
-  res.clearCookie('refreshToken');
+  res.clearCookie('refreshToken', {
+    secure: config.env === 'production',
+    httpOnly: true,
+    sameSite: config.env === 'production' ? 'none' : 'lax',
+  });
   sendResponse(res, {
     statusCode: status.OK,
     message: 'Logged out successfully',
