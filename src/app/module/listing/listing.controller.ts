@@ -105,6 +105,16 @@ const toggleSaveListing = catchAsync(async (req, res) => {
   });
 });
 
+const getSavedListings = catchAsync(async (req, res) => {
+  const result = await ListingService.getSavedListings(req.user!.id);
+
+  sendResponse(res, {
+    statusCode: status.OK,
+    message: 'Saved listings retrieved successfully',
+    data: result,
+  });
+});
+
 const getLandlordDashboardStats = catchAsync(async (req, res) => {
   const result = await ListingService.getLandlordDashboardStats(req.user!.id);
 
@@ -124,5 +134,6 @@ export const ListingController = {
   deleteListing,
   getMyListings,
   toggleSaveListing,
+  getSavedListings,
   getLandlordDashboardStats,
 };

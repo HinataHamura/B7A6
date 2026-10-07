@@ -271,6 +271,34 @@ const toggleSaveListing = async (tenantUserId: string, listingId: string) => {
   return { saved: true };
 };
 
+const getSavedListings = async (tenantUserId: string) => {
+  const tenantProfile = await prisma.tenantProfile.findUnique({
+    where: { userId: tenantUserId },
+  });
+
+  if (!tenantProfile) {
+    throw new AppError(status.NOT_FOUND, 'Tenant profile not found');
+  }
+
+  const savedListings = await prisma.savedListing.findMany({
+    where: { tenantId: tenantProfile.id },
+    include: {
+      listing: {
+        include: {
+          landlord: {
+            select: { name: true, profilePhoto: true, isVerifiedHost: true },
+          },
+        },
+      },
+    },
+    orderBy: { createdAt: 'desc' },
+  });
+
+  return savedListings
+    .map(({ listing }) => listing)
+    .filter((listing) => listing.deletedAt === null && listing.status === 'PUBLISHED');
+};
+
 const getLandlordDashboardStats = async (landlordUserId: string) => {
   const landlordProfile = await prisma.landlordProfile.findUnique({
     where: { userId: landlordUserId },
@@ -330,5 +358,6 @@ export const ListingService = {
   deleteListing,
   getMyListings,
   toggleSaveListing,
+  getSavedListings,
   getLandlordDashboardStats,
 };

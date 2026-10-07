@@ -27,6 +27,8 @@ router.get(
 
 router.get('/my-listings', checkAuth('LANDLORD'), ListingController.getMyListings);
 
+router.get('/saved', checkAuth('TENANT'), ListingController.getSavedListings);
+
 router.get(
   '/dashboard-stats',
   checkAuth('LANDLORD'),
