@@ -1,9 +1,16 @@
 import status from 'http-status';
+import { config } from '../../config/index.js';
 import { catchAsync } from '../../utils/catchAsync.js';
 import { parsePagination } from '../../utils/pagination.js';
 import { sendResponse } from '../../utils/sendResponse.js';
-import { renderPaymentResultPage } from './payment.page.js';
 import { PaymentService } from './payment.service.js';
+
+const getClientResultUrl = (result: 'success' | 'fail' | 'cancel', transactionId: string) => {
+  const clientUrl = config.clientUrl.replace(/\/+$/, '');
+  const page = result === 'success' ? 'success' : 'cancel';
+  const params = new URLSearchParams({ transactionId, outcome: result });
+  return `${clientUrl}/payment/${page}?${params.toString()}`;
+};
 
 const initiatePayment = catchAsync(async (req, res) => {
   const result = await PaymentService.initiatePayment(req.user!.id, req.body);
@@ -20,22 +27,19 @@ const paymentSuccess = catchAsync(async (req, res) => {
   const valId = (req.body?.val_id || req.query?.val_id) as string;
 
   await PaymentService.handlePaymentSuccess(transactionId, valId);
-
-  res.status(status.OK).send(renderPaymentResultPage('success', transactionId));
+  res.redirect(303, getClientResultUrl('success', transactionId));
 });
 
 const paymentFail = catchAsync(async (req, res) => {
   const transactionId = req.params.tranId as string;
   await PaymentService.handlePaymentFailOrCancel(transactionId, 'FAILED');
-
-  res.status(status.OK).send(renderPaymentResultPage('fail', transactionId));
+  res.redirect(303, getClientResultUrl('fail', transactionId));
 });
 
 const paymentCancel = catchAsync(async (req, res) => {
   const transactionId = req.params.tranId as string;
   await PaymentService.handlePaymentFailOrCancel(transactionId, 'CANCELLED');
-
-  res.status(status.OK).send(renderPaymentResultPage('cancel', transactionId));
+  res.redirect(303, getClientResultUrl('cancel', transactionId));
 });
 
 const paymentIPN = catchAsync(async (req, res) => {

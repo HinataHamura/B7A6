@@ -13,7 +13,7 @@ const getAllUsers = async () => {
       status: true,
       provider: true,
       createdAt: true,
-      landlordProfile: { select: { name: true, isVerifiedHost: true } },
+      landlordProfile: { select: { id: true, name: true, isVerifiedHost: true } },
       tenantProfile: { select: { name: true } },
     },
     orderBy: { createdAt: 'desc' },
@@ -39,6 +39,14 @@ const updateUserStatus = async (
   const updated = await prisma.user.update({
     where: { id: userId },
     data: { status: nextStatus },
+    select: {
+      id: true,
+      email: true,
+      role: true,
+      status: true,
+      provider: true,
+      createdAt: true,
+    },
   });
 
   await AuditService.createAuditLog({
